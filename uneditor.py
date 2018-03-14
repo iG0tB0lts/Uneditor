@@ -25,14 +25,14 @@ def save_msg(bot, update):
 
 # ################      MAIN        ##################
 def main():
-    updater = Updater(token='Enter token # here')
+    updater = Updater(token='')
     dp = updater.dispatcher
 
     # Dispatcher for commands
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))
-    dp.add_handler(MessageHandler(Filters.text, see_edit, allow_edited=True))
+    dp.add_handler(MessageHandler(Filters.text, see_edit, edited_updates=True))
     # Begin polling
     updater.start_polling()
     updater.idle()

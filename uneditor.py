@@ -1,8 +1,10 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import pickle
+import pickle, sqlite3
 
 msg_dict = {}
 chat_list = []
+
+
 
 with open('message.pickle', 'rb') as handle:
     msg_dict = pickle.load(handle)
@@ -13,7 +15,7 @@ with open('chatinfo.pickle', 'rb') as handle:
 
 def see_edit(bot, update):
     edit_id = update.edited_message.message_id
-    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(msg_dict["{}".format(edit_id)]))
+    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(msg_dict[edit_id]))
 
 
 def write_to_file():
@@ -25,7 +27,7 @@ def write_to_file():
 def save_msg(bot, update):
     chat_id = update.message.chat_id
     msg_id = update.message.message_id
-    msg_dict["{}".format(msg_id)] = update.message.text
+    msg_dict[msg_id] = update.message.text
     write_to_file()
     # Save chat info
     if chat_id not in chat_list:

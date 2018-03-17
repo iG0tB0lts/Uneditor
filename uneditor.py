@@ -23,7 +23,7 @@ def write_to_file():
 
 # Save Message
 def save_msg(bot, update):
-    chat_id = update.message.chat_id
+    chat_id = str(update.message.chat_id)
     msg_id = update.message.message_id
     msg_dict["{}".format(msg_id)] = update.message.text
     write_to_file()
@@ -45,7 +45,7 @@ def main():
     dp = updater.dispatcher
 
     # Dispatcher for commands
-    dp.add_handler(CommandHandler("maint", Filters.user(37299557), maintain))
+    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))

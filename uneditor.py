@@ -23,13 +23,13 @@ def write_to_file():
 
 # Save Message
 def save_msg(bot, update):
-    chat_id = str(update.message.chat_id)
+    chat_id = update.message.chat_id
     msg_id = update.message.message_id
     msg_dict["{}".format(msg_id)] = update.message.text
     write_to_file()
     # Save chat info
     if chat_id not in chat_list:
-        chat_list.append("{}".format(chat_id))
+        chat_list.append(chat_id)
         with open('chatinfo.pickle', 'wb') as handle:
             pickle.dump(chat_list, handle)
 

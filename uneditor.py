@@ -25,7 +25,6 @@ def see_edit(bot, update):
     update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id, chat_title)))
 
 
-
 def add_todb(tn, msg_id, msg_txt):
     conn = sqlite3.connect('msgs.sqlite')
     c = conn.cursor()
@@ -35,7 +34,6 @@ def add_todb(tn, msg_id, msg_txt):
     conn.close()
 
 
-# Save Message
 def save_msg(bot, update):
     chat_title = str(update.message.chat.title)
     chat_id = update.message.chat_id

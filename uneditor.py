@@ -1,12 +1,13 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import pickle, sqlite3
 
-msg_dict = {}
 chat_list = []
 
 
-with open('chatinfo.pickle', 'rb') as handle:
-    chat_list = pickle.load(handle)
+def read_list():
+    with open('chatinfo.pickle', 'rb') as handle:
+        cl = pickle.load(handle)
+    return cl
 
 
 def read_db(msg_id, tn):
@@ -21,8 +22,8 @@ def read_db(msg_id, tn):
 
 def see_edit(bot, update):
     msg_id = int(update.edited_message.message_id)
-    chat_title = str(update.edited_message.chat.title)
-    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id, chat_title)))
+    chat_id = str(update.edited_message.chat.title)
+    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id, chat_id)))
 
 
 def add_todb(tn, msg_id, msg_txt):
@@ -35,13 +36,11 @@ def add_todb(tn, msg_id, msg_txt):
 
 
 def save_msg(bot, update):
-    chat_title = str(update.message.chat.title)
-    chat_id = update.message.chat_id
+    chat_id = str(update.message.chat_id)
     msg_id = int(update.message.message_id)
     msg_txt = update.message.text
-    msg_dict[msg_id] = msg_txt
-    add_todb(chat_title, msg_id, msg_txt)
-    # Save chat info
+    add_todb(chat_id, msg_id, msg_txt)
+    # Save chats in which bot exists
     if chat_id not in chat_list:
         chat_list.append(chat_id)
         with open('chatinfo.pickle', 'wb') as handle:
@@ -49,6 +48,7 @@ def save_msg(bot, update):
 
 
 def maintain(bot, update):
+    chat_list = read_list()
     for i in chat_list:
         bot.sendMessage(chat_id=i, text='Bot is down for maintenance.')
 

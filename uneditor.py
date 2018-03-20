@@ -5,30 +5,44 @@ msg_dict = {}
 chat_list = []
 
 
-
-with open('message.pickle', 'rb') as handle:
-    msg_dict = pickle.load(handle)
-
 with open('chatinfo.pickle', 'rb') as handle:
     chat_list = pickle.load(handle)
 
 
+def read_db(msg_id, tn):
+    conn = sqlite3.connect('msgs.sqlite')
+    c = conn.cursor()
+    c.execute("SELECT txt FROM {} WHERE id = {}".format(tn, msg_id))
+    data = c.fetchone()
+    conn.commit()
+    conn.close()
+    return data[0]
+
+
 def see_edit(bot, update):
-    edit_id = update.edited_message.message_id
-    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(msg_dict[edit_id]))
+    msg_id = int(update.edited_message.message_id)
+    chat_title = str(update.edited_message.chat.title)
+    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id, chat_title)))
 
 
-def write_to_file():
-    with open('message.pickle', 'wb') as handle:  # Save messages
-        pickle.dump(msg_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def add_todb(tn, msg_id, msg_txt):
+    conn = sqlite3.connect('msgs.sqlite')
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS {} (id INTEGER, txt TEXT)".format(tn))
+    c.execute("INSERT INTO {} VALUES ({}, '{}')".format(tn, msg_id, msg_txt))
+    conn.commit()
+    conn.close()
 
 
 # Save Message
 def save_msg(bot, update):
+    chat_title = str(update.message.chat.title)
     chat_id = update.message.chat_id
-    msg_id = update.message.message_id
-    msg_dict[msg_id] = update.message.text
-    write_to_file()
+    msg_id = int(update.message.message_id)
+    msg_txt = update.message.text
+    msg_dict[msg_id] = msg_txt
+    add_todb(chat_title, msg_id, msg_txt)
     # Save chat info
     if chat_id not in chat_list:
         chat_list.append(chat_id)

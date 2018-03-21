@@ -30,7 +30,7 @@ def add_todb(tn, msg_id, msg_txt):
     conn = sqlite3.connect('msgs.sqlite')
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS '{}' (id INTEGER, txt TEXT)".format(tn))
-    c.execute("INSERT INTO '{}' VALUES ({}, '{}')".format(tn, msg_id, msg_txt))
+    c.execute("INSERT INTO '{}' VALUES (?, ?)".format(tn), (msg_id, msg_txt))
     conn.commit()
     conn.close()
 
@@ -59,7 +59,7 @@ def main():
     dp = updater.dispatcher
 
     # Dispatcher for commands
-    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user(37)))
+    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))

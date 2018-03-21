@@ -10,10 +10,10 @@ def read_list():
     return cl
 
 
-def read_db(msg_id, tn):
+def read_db(msg_id):
     conn = sqlite3.connect('msgs.sqlite')
     c = conn.cursor()
-    c.execute("SELECT txt FROM {} WHERE id = {}".format(tn, msg_id))
+    c.execute("SELECT txt FROM messages WHERE id = {}".format(msg_id))
     data = c.fetchone()
     conn.commit()
     conn.close()
@@ -22,15 +22,14 @@ def read_db(msg_id, tn):
 
 def see_edit(bot, update):
     msg_id = int(update.edited_message.message_id)
-    chat_id = str(update.edited_message.chat.title)
-    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id, chat_id)))
+    update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(msg_id)))
 
 
-def add_todb(tn, msg_id, msg_txt):
+def add_todb(msg_id, msg_txt):
     conn = sqlite3.connect('msgs.sqlite')
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS {} (id INTEGER, txt TEXT)".format(tn))
-    c.execute("INSERT INTO {} VALUES ({}, '{}')".format(tn, msg_id, msg_txt))
+    c.execute("CREATE TABLE IF NOT EXISTS messages (id INTEGER, txt TEXT)")
+    c.execute("INSERT INTO messages VALUES ({}, '{}')".format(msg_id, msg_txt))
     conn.commit()
     conn.close()
 
@@ -39,7 +38,7 @@ def save_msg(bot, update):
     chat_id = str(update.message.chat_id)
     msg_id = int(update.message.message_id)
     msg_txt = update.message.text
-    add_todb(chat_id, msg_id, msg_txt)
+    add_todb(msg_id, msg_txt)
     # Save chats in which bot exists
     if chat_id not in chat_list:
         chat_list.append(chat_id)

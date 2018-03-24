@@ -43,7 +43,7 @@ def add_todb(tn, msg_id, msg_txt):
 
 
 def save_msg(bot, update):
-    if update.message.user.is_bot == 'False':
+    if update.message.from_user.is_bot == 'False':
         chat_id = str(update.message.chat_id)
         msg_id = int(update.message.message_id)
         msg_txt = update.message.text

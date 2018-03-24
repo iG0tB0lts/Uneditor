@@ -43,15 +43,16 @@ def add_todb(tn, msg_id, msg_txt):
 
 
 def save_msg(bot, update):
-    chat_id = str(update.message.chat_id)
-    msg_id = int(update.message.message_id)
-    msg_txt = update.message.text
-    add_todb(chat_id, msg_id, msg_txt)
-    # Save chats in which bot exists
-    if chat_id not in chat_list:
-        chat_list.append(chat_id)
-        with open('chatinfo.pickle', 'wb') as handle:
-            pickle.dump(chat_list, handle)
+    if update.message.user.is_bot == 'False':
+        chat_id = str(update.message.chat_id)
+        msg_id = int(update.message.message_id)
+        msg_txt = update.message.text
+        add_todb(chat_id, msg_id, msg_txt)
+        # Save chats in which bot exists
+        if chat_id not in chat_list:
+            chat_list.append(chat_id)
+            with open('chatinfo.pickle', 'wb') as handle:
+                pickle.dump(chat_list, handle)
 
 
 def maintain(bot, update):

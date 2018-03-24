@@ -1,6 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import pickle, sqlite3
-
 chat_list = []
 
 
@@ -20,17 +19,25 @@ def read_db(tn, msg_id):
     return data[0]
 
 
+def del_old(tn):
+    conn = sqlite3.connect('msgs.sqlite')
+    c = conn.cursor()
+    c.execute("DELETE FROM '{}' WHERE date <= date('now', '-2 day')".format(tn))
+    conn.commit()
+    conn.close()
+
 def see_edit(bot, update):
     chat_id = str(update.edited_message.chat_id)
     msg_id = int(update.edited_message.message_id)
     update.edited_message.reply_text("Message edited! Original message was:\n'{}'".format(read_db(chat_id, msg_id)))
+    del_old(chat_id)
 
 
 def add_todb(tn, msg_id, msg_txt):
     conn = sqlite3.connect('msgs.sqlite')
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS '{}' (id INTEGER, txt TEXT)".format(tn))
-    c.execute("INSERT INTO '{}' VALUES (?, ?)".format(tn), (msg_id, msg_txt))
+    c.execute("CREATE TABLE IF NOT EXISTS '{}' (id INTEGER, txt TEXT, date INTEGER)".format(tn))
+    c.execute("INSERT INTO '{}' VALUES (?, ?, date('now'))".format(tn), (msg_id, msg_txt))
     conn.commit()
     conn.close()
 

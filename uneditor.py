@@ -54,6 +54,10 @@ def save_msg(bot, update):
             pickle.dump(chat_list, handle)
 
 
+def init(bot, update):
+    update.message.reply_text("Hi! Simply send a message, then edit it.\nAdd to groups for additional benefit!")
+
+
 def maintain(bot, update):
     chat_list = read_list()
     for i in chat_list:
@@ -66,6 +70,7 @@ def main():
     dp = updater.dispatcher
 
     # Dispatcher for commands
+    dp.add_handler(CommandHandler("start", init))
     dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
 
     # Dispatcher for msgs

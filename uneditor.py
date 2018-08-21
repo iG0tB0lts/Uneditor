@@ -46,12 +46,14 @@ def save_msg(bot, update):
     chat_id = str(update.message.chat_id)
     msg_id = int(update.message.message_id)
     msg_txt = update.message.text
-    add_todb(chat_id, msg_id, msg_txt)
-    # Save chats in which bot exists
-    if chat_id not in chat_list:
-        chat_list.append(chat_id)
-        with open('chatinfo.pickle', 'wb') as handle:
-            pickle.dump(chat_list, handle)
+    ckey = ['Connect Four\n\n', 'Tic-Tac-Toe\n\n', 'Rock-Paper-Scissors\n\n', 'Russian Roulette\n\n', 'Checkers\n\n', 'Pool Checkers\n\n']
+    if all(word not in str(msg_txt) for word in ckey):
+        add_todb(chat_id, msg_id, msg_txt)
+        # Save chats in which bot exists
+        if chat_id not in chat_list:
+            chat_list.append(chat_id)
+            with open('chatinfo.pickle', 'wb') as handle:
+                pickle.dump(chat_list, handle)
 
 
 def init(bot, update):
@@ -66,12 +68,12 @@ def maintain(bot, update):
 
 # ################      MAIN        ##################
 def main():
-    updater = Updater(token='')
+    updater = Updater(token='321566295:AAEFsrx7pT1lZuUi6cHU1W65_WQaSMoK0fI')
     dp = updater.dispatcher
 
     # Dispatcher for commands
     dp.add_handler(CommandHandler("start", init))
-    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
+    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user(37299557)))
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))

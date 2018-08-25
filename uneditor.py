@@ -68,12 +68,12 @@ def maintain(bot, update):
 
 # ################      MAIN        ##################
 def main():
-    updater = Updater(token='321566295:AAEFsrx7pT1lZuUi6cHU1W65_WQaSMoK0fI')
+    updater = Updater(token='')
     dp = updater.dispatcher
 
     # Dispatcher for commands
     dp.add_handler(CommandHandler("start", init))
-    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user(37299557)))
+    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))

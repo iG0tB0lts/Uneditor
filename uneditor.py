@@ -1,12 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import pickle, sqlite3
-chat_list = []
-
-
-def read_list():
-    with open('chatinfo.pickle', 'rb') as handle:
-        cl = pickle.load(handle)
-    return cl
 
 
 def read_db(tn, msg_id):
@@ -58,12 +51,7 @@ def save_msg(bot, update):
 
 def init(bot, update):
     update.message.reply_text("Hi! Simply send a message, then edit it.\nAdd to groups for additional benefit!")
-
-
-def maintain(bot, update):
-    chat_list = read_list()
-    for i in chat_list:
-        bot.sendMessage(chat_id=i, text='Bot is down for maintenance.')
+    
 
 
 # ################      MAIN        ##################
@@ -73,7 +61,6 @@ def main():
 
     # Dispatcher for commands
     dp.add_handler(CommandHandler("start", init))
-    dp.add_handler(CommandHandler("maint", maintain, filters=Filters.user()))
 
     # Dispatcher for msgs
     dp.add_handler(MessageHandler(Filters.text, save_msg))

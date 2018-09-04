@@ -42,11 +42,6 @@ def save_msg(bot, update):
     ckey = ['Connect Four\n\n', 'Tic-Tac-Toe\n\n', 'Rock-Paper-Scissors\n\n', 'Russian Roulette\n\n', 'Checkers\n\n', 'Pool Checkers\n\n']
     if all(word not in str(msg_txt) for word in ckey):
         add_todb(chat_id, msg_id, msg_txt)
-        # Save chats in which bot exists
-        if chat_id not in chat_list:
-            chat_list.append(chat_id)
-            with open('chatinfo.pickle', 'wb') as handle:
-                pickle.dump(chat_list, handle)
 
 
 def init(bot, update):
